@@ -3,16 +3,23 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 footer {
     color: rgba(0, 0, 0, 0.15);
     text-align: center;
+
 }
 
 a:link,a:visited {
-    display: block;
-    text-align: center;
     text-decoration: none;
     color: gray;
+}
+
+a:hover {
+    color: darkblue;
 }

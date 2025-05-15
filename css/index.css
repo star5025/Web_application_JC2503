@@ -4,7 +4,6 @@
     gap: 10px;
     margin: 20px;
     height: 95vh;
-    box-shadow: 10px 10px 8px gainsboro
 }
 
 .sidebar {
@@ -32,11 +31,13 @@
     border-radius: 10px;
     text-align: center;
     line-height: 30px;
+    transition: 0.3s;
 }
 
 .option:hover {
     background-color: gainsboro;
     color: black;
+    transform: scale(1.1);
 }
 
 .portrait {
@@ -45,6 +46,11 @@
     border-radius: 60px;
     height: 150px;
     width: 112.5px;
+    transition: transform 0.3s;
+}
+
+.portrait:hover {
+    transform: scale(1.05);
 }
 
 .contact {
@@ -63,13 +69,16 @@
     margin-bottom: 10px;
     height: 50px;
     width: 50px;
+    transition: transform 0.5s;
 }
 
 .github-link:hover .github-icon{
     fill: black;
+    transform: scale(1.1);
 }
 .github-link:hover span {
     color: black;
+    transform: scale(1.1);
 }
 
 .intro {
@@ -79,8 +88,40 @@
     color: black;
 }
 
+.list {
+    display: block;
+    background-color: rgb(228, 250, 255);
+    line-height: 25px;
+    border-radius: 8px;
+    border: 2px solid black;
+    transition: 0.8s;
+}
+
+.list:hover {
+    transform: scale(1.05);
+}
+
 .greet {
     font-size: 40px;
     text-align: center;
     text-shadow: 2px 2px 3px rgba(0,0,0,0.12);
+}
+
+.top {
+    background-color: rgb(193, 251, 255);
+    border: 0.2px solid black;
+    height: 45px;
+    width: 40px;
+    border-radius: 99px;
+    text-align: center;
+    line-height: 40px;
+    box-shadow: 5px 5px 8px rgba(54, 54, 54, 0.5);
+    position: fixed;
+    right: 40px;
+    bottom: 10px;
+    transition: 0.3s;
+}
+
+.top:hover {
+    transform: scale(1.3);
 }

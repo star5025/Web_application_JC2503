@@ -1,0 +1,56 @@
+.navigatebar {
+    display: flex;
+    background-color: rgba(59, 177, 216, 0.8);
+    width: 95%;
+    height: 80px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 3px 3px 4px rgb(95, 95, 95, 0.3);
+    position: fixed;
+    margin-top: 5px;
+}
+
+.options {
+    display: flex;
+    height: 60px;
+    width: 120px;
+    background-color: #b7ffe957;
+    margin-right: 40px;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    transition: 0.8s;
+}
+
+.options:hover {
+    transform: scale(1.2);
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #a1e5f2;
+    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.interests {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(228, 250, 255, 0.5);
+    margin: 80px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid black;
+}
+
+.lists {
+    display: block;
+    background-color: rgb(228, 250, 255);
+    line-height: 25px;
+    border-radius: 8px;
+    border: 2px solid black;
+}

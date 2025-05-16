@@ -28,5 +28,5 @@ app.post('/messages', (req, res) => {
 // 启动服务器
 const PORT = 5500;
 app.listen(PORT, () => {
-  console.log(`server start at：http://localhost:${PORT}`);
+  console.log(`server is running at：http://localhost:${PORT}`);
 });

@@ -9,6 +9,15 @@ html, body {
     -ms-user-select: none;
 }
 
+.container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px;
+    height: 95vh;
+}
+
 footer {
     color: rgba(0, 0, 0, 0.15);
     text-align: center;

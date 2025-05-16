@@ -1,0 +1,152 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px;
+    height: 95vh;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 200px;
+    background-color: #3bb1d8;
+    border-radius: 8px;
+    box-shadow: 5px 5px 8px gainsboro
+}
+
+.main {
+    flex: 1 1 0px;
+    background-color: #a1e5f2;
+    border-radius: 8px;
+    box-shadow: 5px 5px 8px gainsboro
+}
+
+.option {
+    background-color: #dff3fb;
+    height: 30px;
+    width: 100px;
+    margin: 5px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 30px;
+    transition: 0.3s;
+}
+
+.option:hover {
+    background-color: gainsboro;
+    color: black;
+    transform: scale(1.1);
+}
+
+.portrait {
+    display: block;
+    margin: 20px;
+    border-radius: 60px;
+    height: 150px;
+    width: 112.5px;
+    transition: transform 0.3s;
+}
+
+.portrait:hover {
+    transform: scale(1.05);
+}
+
+.contact {
+    display: block;
+    margin: 10px;
+    margin-top: auto;
+    height: 10px;
+    width: 150px;
+    color: gainsboro;
+    line-height: 20px;
+}
+
+.github-link {
+    display: block;
+    margin-top: auto;
+    margin-bottom: 10px;
+    height: 50px;
+    width: 50px;
+    transition: transform 0.5s;
+}
+
+.github-link:hover .github-icon{
+    fill: black;
+    transform: scale(1.1);
+}
+.github-link:hover span {
+    color: black;
+    transform: scale(1.1);
+}
+
+.intro {
+    border-radius: 6px;
+    margin: 10px;
+    padding: 3px;
+    color: black;
+}
+
+.list {
+    display: block;
+    background-color: rgb(228, 250, 255);
+    line-height: 25px;
+    border-radius: 8px;
+    border: 2px solid black;
+    transition: 0.8s;
+}
+
+.list:hover {
+    transform: scale(1.05);
+}
+
+.greet {
+    font-size: 40px;
+    text-align: center;
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.12);
+}
+
+.top {
+    background-color: rgb(193, 251, 255);
+    border: 0.2px solid black;
+    height: 45px;
+    width: 40px;
+    border-radius: 99px;
+    text-align: center;
+    line-height: 40px;
+    box-shadow: 5px 5px 8px rgba(54, 54, 54, 0.5);
+    position: fixed;
+    right: 40px;
+    bottom: 10px;
+    transition: 0.3s;
+}
+
+.top:hover {
+    transform: scale(1.3);
+}
+
+.messageBoard {
+    display: flex;
+    margin: 8px;
+    padding: 5px;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    background-color: #a1e5f2;
+    border-radius: 20px;
+    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.15);
+}
+
+#messages {
+    margin: 20px;
+    background-color: #00e6a13d;
+    border-radius: 20px;
+    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+#messages:hover{
+    transform: scale(1.1);
+}
+

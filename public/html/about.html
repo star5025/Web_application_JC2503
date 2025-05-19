@@ -6,7 +6,6 @@
     <title>About me</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/about.css">
-    <script src="js/main.js"></script>
 </head>
 <body>
     <div class="container">
@@ -18,6 +17,8 @@
             <a href="#photographing" class="options">Photographing</a>
         </div>
         <div class="main">
+            <button class="home" onclick="goToPage('../index.html')">Back to home</button>
+            <button class="quiz" onclick="goToPage('quiz.html')">Quiz game</button>
             <div class="interests" id="coding">
                 <h3>Coding 💻 <sub>09/2023 - now</sub></h3>
                 <h5>Current Learning</h5>
@@ -28,7 +29,7 @@
                     <li>MySQL</li>
                     <li>Operating Systems Principles</li>
                     <li>Algorithm Design and Analysis</li>
-                    <li>Computer Networks</li>
+                    <li>Computer Networking</li>
                 </ul>
                 <h5>Skills</h5>
                 <ul class="lists">
@@ -36,21 +37,70 @@
                     <li>SQL / MySQL</li>
                     <li>HTML / CSS / Node.js</li>
                 </ul>
+                <h5>Projects</h5>
+                <ul class="lists">
+                    <li>
+                        Conference information release platform (WeChat miniprogram) <br> 
+                        <i>GitHub: <a href="https://github.com/star5025/WeChat_Mini_program-ABD-">https://github.com/star5025/WeChat_Mini_program-ABD-</i></a>
+                    </li>
+                    <li>
+                        English words learning application (Python) <br>
+                    </li>
+                    <li>
+                        Website with quiz game and introduction about myself <br>
+                        <i>GitHub: <a href="https://github.com/star5025/JC2503_Assignment">https://github.com/star5025/JC2503_Assignment</a></i>
+                    </li>
+                    <li>
+                        LeetCode <br>
+                        <i><a href="https://leetcode.cn/u/star5025/">https://leetcode.cn/u/star5025/</a></i>
+                    </li>
+                </ul>
 
             </div>
             <div class="interests" id="cycling">
                 <h3>Cycling 🚴 <sub>10/2020 - now</sub></h3>
+                <div class="content">
+                    <div class="displayImgs">
+                        <img id="cyclingImg" src="../assets/images/cycling/myRoadBike3.jpeg" alt="cycling pictures">
+                        <button class="nextBtn" onclick="nextCycImg()">Next⏭️</button>
+                    </div>
+                    <p>Cycling gives me a healthy body and a strong mind. It has also brought me many friends who share the same passion. 😃 I won't give up this hobby for the rest of my life! 💪</p>
+                </div>
             </div>
             <div class="interests" id="travelling">
                 <h3>Travelling 🛫 <sub>06/2023 - now</sub></h3>
+                <div class="content">
+                    <div class="displayImgs">
+                        <img id="travellingImg" src="../assets/images/travelling/singapore.jpg" alt="travelling pictures">
+                        <button class="nextBtn" onclick="nextTraImg()">Next⏭️</button>
+                    </div>
+                    <p>"The best textbook for learning is a passport.🌏"</p>
+                </div>
             </div>
             <div class="interests" id="hiking">
                 <h3>Hiking 🥾 <sub>07/2024 - now</sub></h3>
+                <div class="content">
+                    <div class="displayImgs">
+                        <img id="hikingImg" src="" alt="hiking pictures">
+                        <button class="nextBtn" onclick="nextHikImg()">Next⏭️</button>
+                    </div>
+                    <p></p>
+                </div>
             </div>
             <div class="interests" id="photographing">
                 <h3>Photographing 📷 <sub>09/2023 - now</sub></h3>
+                <div class="content">
+                    <div class="displayImgs">
+                        <img id="photographingImg" src="" alt="photograph">
+                        <button class="nextBtn" onclick=nextPhoImg()"">Next⏭️</button>
+                    </div>
+                    <p></p>
+                </div>
             </div>
         </div>
     </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/about.js"></script>
 </body>
 </html>

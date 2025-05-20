@@ -20,10 +20,26 @@ const travellingImgs = [
     '../assets/images/travelling/xinjiang.jpg'
 ];
 const hikingImgs = [
-    
+    '../assets/images/hiking/climb.jpg',
+    '../assets/images/hiking/hikeWithFriends.jpg',
+    '../assets/images/hiking/hikeWithFriends2.jpg',
+    '../assets/images/hiking/camp.jpg',
+    '../assets/images/hiking/group.jpeg',
+    '../assets/images/hiking/siguniang.jpg',
+    '../assets/images/hiking/meadow.jpg',
+    '../assets/images/hiking/snowPeak.jpg',
+    '../assets/images/hiking/Mt.Wugong.jpg',
+    '../assets/images/hiking/seaOfClouds.jpg',
 ];
 const photographing = [
-
+    '../assets/images/photographing/ragdoll.jpg',
+    '../assets/images/photographing/sunrise.jpg',
+    '../assets/images/photographing/diamondDust.jpg',
+    '../assets/images/photographing/bottleTree.jpg',
+    '../assets/images/photographing/GuiLin.jpg',
+    '../assets/images/photographing/HongKong.jpg',
+    '../assets/images/photographing/mitsubishi.jpg',
+    '../assets/images/photographing/audi.jpg'
 ];
 let cIndex = 0;
 let tIndex = 0;

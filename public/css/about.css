@@ -132,3 +132,8 @@ img:hover {
     align-items: center;
     gap: 20px;
 }
+
+.gallery {
+    height: 400px;
+    width: 600px;
+}

@@ -1,9 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
+const { socket } = require('server/router');
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server); // 创建Socket.IO服务器
 const messages = []; // 保存所有留言，实际项目可用数据库
+const players = {}; //保存在线玩家的信息，(每个玩家的socket id: 玩家名)
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -23,6 +29,23 @@ app.post('/messages', (req, res) => {
   } else {
     res.status(400).json({ success: false, msg: 'user and text required' });
   }
+});
+
+// 监听客户端连接
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id);
+
+  // 监听客户端发来的消息
+  socket.on('player name', (msg) => {
+    console.log('Received message:', msg);
+    // 广播给所有连接的客户端
+    io.emit('player name', msg);
+  });
+
+  // 监听断开
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
 });
 
 // 启动服务器

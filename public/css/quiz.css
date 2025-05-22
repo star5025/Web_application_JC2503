@@ -1,0 +1,98 @@
+.container {
+    background-color: #aae4ff97;
+    border-radius: 8px;
+    box-shadow: 3px 3px 4px rgb(95, 95, 95, 0.3);
+    flex-direction: column;
+    align-items: center;
+}
+
+.instruction {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(239, 239, 239, 0.8);
+    box-shadow: 3px 3px 4px rgb(0, 95, 95, 0.2);
+    margin: 30px;
+    padding: 10px;
+    line-height: 35px;
+    border-radius: 8px;
+    transition: 0.5s;
+}
+
+.instruction:hover {
+    transform: scale(1.2);
+}
+
+.inputBox {
+    background-color: #8bbbff;
+    display: flex;
+    flex-direction: column;
+    margin: 30px;
+    height: 300px;
+    width: 400px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    box-shadow: 3px 3px 4px rgb(0, 95, 95, 0.2);
+}
+
+.nameInputBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.playersList {
+    background-color: #8bbbff;
+    display: flex;
+    border-radius: 30px;
+    box-shadow: 3px 3px 4px rgb(0, 95, 95, 0.2);
+    padding: 10px;
+    margin: 30px;
+    color: rgba(0, 0, 0, 0.577);
+}
+
+button {
+    width: 50px;
+    height: 30px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+    background-color: #bcecff;
+    border: 0.5px solid #bcecff;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.2);
+}
+
+input {
+    height: 30px;
+    border-radius: 5px;
+    font-size: larger;
+    background-color: #f3f3f3;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+    border: 1px;
+    transition: 0.5s;
+}
+
+input:hover {
+    transform: scale(1.1);
+}
+
+.home {
+    position: fixed;
+    bottom: 150px;
+    right: 50px;
+    width: 100px;
+    height: 50px;
+}
+
+.about {
+    position: fixed;
+    bottom: 80px;
+    right: 50px;
+    width: 100px;
+    height: 50px;
+}

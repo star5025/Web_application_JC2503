@@ -5,9 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
     <link rel="stylesheet" href="../css/main.css">
-    <script src="js/main.js"></script>
+    <link rel="stylesheet" href="../css/quiz.css">
 </head>
 <body>
-    
-</body>
+    <div class="container">
+        <button class="home" onclick="goToPage('../index.html')">Back to home</button>
+        <button class="about" onclick="goToPage('about.html')">About me</button>
+        <h1 style="text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);">Welcome to quiz game! 🎉</h1>
+        <div class="instruction">
+            <p>
+                This quiz game supports <mark>multiple players</mark> to play online. 🚀
+                <br> Each round features a <mark>one-on-one</mark> match between two players. 🆚
+                <br> Players can select an online opponent from the <mark>player list</mark> below to start a game. 😀
+                <br> The questions are related to <mark>iconic landmarks or natural scenery</mark> from countries around the world. 🌍
+                <br> To start the game, you need to <mark>give your name</mark>. 💡
+            </p>
+        </div>
+        <div class="inputBox">
+            <p style="color: rgb(91, 106, 129); font-size: larger;">Give your name:</p>
+            <form id="playerName" class="nameInputBox">
+                <input type="text" id="player" required style="margin: 20px;">
+                <button type="submit">submit</button>
+            </form>
+        </div>
+        <div class="playersList">
+            <p>Select an online player to start the quiz game! 🎮</p>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/showPlayers.js"></script>
+</body> 
 </html>

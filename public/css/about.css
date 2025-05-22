@@ -16,7 +16,7 @@
     height: 60px;
     width: 120px;
     background-color: #b7ffe957;
-    margin-right: 40px;
+    margin: 30px;
     justify-content: center;
     align-items: center;
     box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
@@ -135,5 +135,5 @@ img:hover {
 
 .gallery {
     height: 400px;
-    width: 600px;
+    width: 500px;
 }

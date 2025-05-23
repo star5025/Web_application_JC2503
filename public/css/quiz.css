@@ -1,10 +1,14 @@
-.container {
-    background-color: #aae4ff97;
-    border-radius: 8px;
-    box-shadow: 3px 3px 4px rgb(95, 95, 95, 0.3);
+.content {
+    display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    background-color: #a1e5f2;
+    width: 95vw;
+    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
 }
+
 
 .instruction {
     display: flex;
@@ -38,12 +42,11 @@
 
 .nameInputBox {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.playersList {
+.playerList {
     background-color: #8bbbff;
     display: flex;
     border-radius: 30px;
@@ -51,6 +54,25 @@
     padding: 10px;
     margin: 30px;
     color: rgba(0, 0, 0, 0.577);
+    height: 300px;
+    width: 500px;
+}
+
+.nameBlock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e1fffc;
+    border-radius: 8px;
+    margin: 30px;
+    height: 80px;
+    width: 100px;
+    transition: 0.3s;
+    box-shadow: 3px 3px 4px rgb(0, 95, 95, 0.2);
+}
+
+.nameBlock:hover {
+    transform: scale(1.1);
 }
 
 button {

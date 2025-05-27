@@ -7,7 +7,7 @@ const playerNameForm = document.getElementById('playerName');     // 你的名�
 const playerInput = document.getElementById('player');             // 你的名字输入框
 const displayList = document.getElementById('displayList');        // 在线玩家列表容器
 const inputBoxDiv = document.querySelector('.inputBox');           // 输入名字的整体区域
-const TIMER_DURATION = 5; // 秒数，可自行修改
+const TIMER_DURATION = 8; // 秒数，可自行修改
 let timerInterval = null;
 
 // 动态创建挑战提示区，放在 content 内，初始隐藏
@@ -15,10 +15,10 @@ const challengeSection = document.createElement('div');
 challengeSection.id = 'challengeSection';
 challengeSection.classList.add('hidden');
 challengeSection.innerHTML = `
-  <h2>有人挑战你！</h2>
+  <h2>Received a challenge!</h2>
   <p id="challengerName"></p>
-  <button id="acceptChallengeBtn">接受</button>
-  <button id="rejectChallengeBtn">拒绝</button>
+  <button id="acceptChallengeBtn">Accept✅</button>
+  <button id="rejectChallengeBtn">Reject❎</button>
 `;
 contentDiv.appendChild(challengeSection);
 
@@ -27,7 +27,6 @@ const gameSection = document.createElement('div');
 gameSection.id = 'gameSection';
 gameSection.classList.add('hidden');
 gameSection.innerHTML = `
-  <h2>游戏进行中</h2>
   <p id="scoreInfo"></p>
   <p id="questionText"></p>
   <div id="timerContainer"><div id="timerBar"></div></div>
@@ -41,9 +40,9 @@ const gameOverSection = document.createElement('div');
 gameOverSection.id = 'gameOverSection';
 gameOverSection.classList.add('hidden');
 gameOverSection.innerHTML = `
-  <h2>游戏结束</h2>
+  <h2>Game Over🔚</h2>
   <p id="finalResult"></p>
-  <button id="backToStartBtn">返回起始页面</button>
+  <button id="backToStartBtn">Back to start.</button>
 `;
 contentDiv.appendChild(gameOverSection);
 
@@ -69,7 +68,7 @@ playerNameForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const name = playerInput.value.trim();
   if (!name) {
-    alert('请输入你的名字');
+    alert('Please enter your name.');
     return;
   }
   playerName = name;
@@ -77,7 +76,7 @@ playerNameForm.addEventListener('submit', (e) => {
 
   // 隐藏输入名字区域，显示玩家列表
   inputBoxDiv.style.display = 'none';
-  displayList.innerHTML = '<p>等待在线玩家列表更新...</p>';
+  displayList.innerHTML = '<p>Waiting for online player list to be updated...</p>';
 });
 
 // 更新在线玩家列表
@@ -87,21 +86,16 @@ socket.on('playerList', (list) => {
   displayList.innerHTML = '';
 
   if (otherPlayers.length === 0) {
-    displayList.innerHTML = '<p>当前没有其他玩家在线</p>';
+    displayList.innerHTML = '<p>No online player.</p>';
   } else {
     otherPlayers.forEach(name => {
       const playerItem = document.createElement('div');
       playerItem.textContent = name;
       playerItem.classList.add('playerItem');
-      playerItem.style.cursor = 'pointer';
-      playerItem.style.padding = '5px 10px';
-      playerItem.style.border = '1px solid #ccc';
-      playerItem.style.margin = '5px 0';
-      playerItem.style.borderRadius = '4px';
       playerItem.addEventListener('click', () => {
-        if (confirm(`你确定要挑战玩家 ${name} 吗？`)) {
+        if (confirm(`Are you sure to challenge the player, ${name}?`)) {
           socket.emit('challenge', name);
-          alert(`已向 ${name} 发出挑战请求，请等待回应`);
+          alert(`A challenge request has been sent to ${name}. Please wait for response.`);
         }
       });
       displayList.appendChild(playerItem);
@@ -117,7 +111,7 @@ socket.on('challenged', (challengerName) => {
 
   // 显示挑战提示区
   challengeSection.classList.remove('hidden');
-  challengerNameP.textContent = `玩家 ${challengerName} 挑战你！`;
+  challengerNameP.textContent = `Player ${challengerName} challenge you！`;
   acceptBtn.dataset.challenger = challengerName;
   rejectBtn.dataset.challenger = challengerName;
 });
@@ -142,7 +136,7 @@ acceptBtn.addEventListener('click', () => {
 
 // 挑战被拒绝
 socket.on('challengeRejected', (responderName) => {
-  alert(`玩家 ${responderName} 拒绝了你的挑战`);
+  alert(`Player ${responderName} reject you!`);
 });
 
 // 游戏开始
@@ -167,7 +161,7 @@ socket.on('gameStart', (data) => {
 socket.on('nextQuestion', (data) => {
   hasAnswered = false;
   roundResultP.textContent = '';
-  updateScoreText('对手', data.opponentScore, data.yourScore);
+  updateScoreText('opponent', data.opponentScore, data.yourScore);
   showQuestion(data.question, data.options);
 });
 
@@ -175,7 +169,7 @@ socket.on('nextQuestion', (data) => {
 function answerClickHandler(idx) {
   if (hasAnswered) return;
   hasAnswered = true;
-  clearInterval(timerInterval); // 停止倒计时
+  clearInterval(timerInterval);
   disableAnswerButtons();
   socket.emit('submitAnswer', { gameId: currentGameId, answerIndex: idx });
 }
@@ -205,30 +199,30 @@ function showQuestion(question, options) {
 
 // 更新分数显示文本
 function updateScoreText(opponentName, opponentScore, yourScore) {
-  scoreInfo.textContent = `${opponentName}: ${opponentScore} 分, 你: ${yourScore} 分`;
+  scoreInfo.textContent = `${opponentName}: ${opponentScore} , you: ${yourScore} `;
 }
 
 // 显示本轮结果
 socket.on('roundResult', (data) => {
   const correctAnswerText = answerOptionsDiv.children[data.correctAnswer]?.textContent || '';
-  const yourAnswerText = answerOptionsDiv.children[data.yourAnswer]?.textContent || '无答案';
+  const yourAnswerText = answerOptionsDiv.children[data.yourAnswer]?.textContent || 'No answer.';
 
-  let resultMsg = `本轮正确答案是 "${correctAnswerText}"。\n你选择了 "${yourAnswerText}"。`;
+  let resultMsg = `Correct answer: "${correctAnswerText}"。\nYou chose "${yourAnswerText}".`;
 
   if (data.yourAnswerCorrect) {
-    resultMsg += ' 你答对了！';
+    resultMsg += ' Right answer! 🥳';
   } else {
-    resultMsg += ' 你答错了。';
+    resultMsg += ' Wrong answer! 😵';
   }
 
-  resultMsg += `\n当前比分：你 ${data.yourScore} 分， 对手 ${data.opponentScore} 分。`;
+  resultMsg += `\nCurrent score: you: ${data.yourScore} , opponent: ${data.opponentScore} .`;
 
   roundResultP.textContent = resultMsg;
 });
 
 // 对手断线通知
 socket.on('opponentDisconnected', () => {
-  alert('对手已断线，游戏结束');
+  alert('Opponent disconnected, game over.');
   resetToStart();
 });
 
@@ -236,7 +230,7 @@ socket.on('opponentDisconnected', () => {
 socket.on('gameOver', (data) => {
   gameSection.classList.add('hidden');
   gameOverSection.classList.remove('hidden');
-  finalResultText.textContent = `${data.resultText}\n最终比分：你 ${data.yourScore} 分， 对手 ${data.opponentScore} 分。`;
+  finalResultText.textContent = `${data.resultText}\nfinal score: you: ${data.yourScore}   opponent: ${data.opponentScore}`;
 });
 
 // 返回起始页面按钮
@@ -267,6 +261,7 @@ window.addEventListener('load', () => {
   gameOverSection.classList.add('hidden');
 });
 
+// 计时器相关
 function startTimer() {
   const timerBar = document.getElementById('timerBar');
   let timeLeft = TIMER_DURATION;
@@ -279,8 +274,13 @@ function startTimer() {
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
       timerBar.style.width = '0%';
-      disableAnswerButtons();
-      showTimeoutMessage();
+      if (!hasAnswered) {
+        hasAnswered = true;           // 标记已处理，防止重复
+        disableAnswerButtons();
+        showTimeoutMessage();
+        // 关键：告诉服务器你超时没答题，提交一个特殊值（例如 -1）
+        socket.emit('submitAnswer', { gameId: currentGameId, answerIndex: -1 });
+      }
     } else {
       const percent = (timeLeft / TIMER_DURATION) * 100;
       timerBar.style.width = percent + '%';
@@ -288,14 +288,12 @@ function startTimer() {
   }, 100);
 }
 
+
 function disableAnswerButtons() {
   const buttons = document.querySelectorAll('#answerOptions button');
   buttons.forEach(btn => btn.disabled = true);
 }
 
 function showTimeoutMessage() {
-  roundResultP.textContent = '时间到！本轮未作答。';
+  roundResultP.textContent = 'Time out! ⏰';
 }
-
-
-

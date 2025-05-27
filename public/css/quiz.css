@@ -24,7 +24,7 @@
 }
 
 .instruction:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
 }
 
 .inputBox {
@@ -159,6 +159,10 @@ input:hover {
 
 /* 游戏进行区 */
 #gameSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background-color: #d0f0fd;
     border-radius: 20px;
     padding: 20px 30px;
@@ -185,10 +189,13 @@ input:hover {
 
 /* 答案选项按钮 */
 #answerOptions button {
-    width: 100%;
-    max-width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 80px;
     padding: 12px 0;
-    margin: 8px auto;
+    margin: 20px auto;
     border-radius: 25px;
     border: 2px solid #4da6ff;
     background-color: #bcecff;
@@ -276,4 +283,20 @@ input:hover {
     transition: width 0.1s linear;
   }
   
-  
+.playerItem {
+    display: flex;
+    margin: 10px;
+    padding: 3px;
+    height: 60px;
+    width: 100px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(239, 239, 239, 0.8);
+    border-radius: 20px;
+    transition: 0.3s;
+    box-shadow: 3px 3px 4px rgb(0, 95, 95, 0.2);
+}
+
+.playerItem:hover {
+    transform: scale(1.1);
+}

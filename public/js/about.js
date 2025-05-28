@@ -1,3 +1,5 @@
+// about页面图片的相对路径
+// Store the relative path of the image
 const cyclingImgs = [
     '../assets/images/cycling/myRoadBike3.jpeg', 
     '../assets/images/cycling/myRoadBike.jpg', 
@@ -46,6 +48,8 @@ let tIndex = 0;
 let hIndex = 0;
 let pIndex = 0;
 
+// 点击切换至下一张图片
+// Show next image when the next button is clicked
 function nextCycImg() {
     cIndex = (cIndex + 1) % cyclingImgs.length;
     document.getElementById('cyclingImg').src = cyclingImgs[cIndex];

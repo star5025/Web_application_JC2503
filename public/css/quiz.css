@@ -20,11 +20,11 @@
     padding: 10px;
     line-height: 35px;
     border-radius: 8px;
-    transition: 0.5s;
+    transition: 0.3s;
 }
 
 .instruction:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .inputBox {
@@ -119,12 +119,10 @@ input:hover {
     height: 50px;
 }
 
-/* 新增隐藏类，控制元素隐藏 */
 .hidden {
     display: none !important;
 }
 
-/* 挑战提示区 */
 #challengeSection {
     background-color: #d0f0fd;
     border-radius: 20px;
@@ -138,7 +136,6 @@ input:hover {
     font-weight: 600;
 }
 
-/* 挑战提示区按钮 */
 #challengeSection button {
     width: 120px;
     height: 40px;
@@ -157,7 +154,6 @@ input:hover {
     transform: scale(1.1);
 }
 
-/* 游戏进行区 */
 #gameSection {
     display: flex;
     flex-direction: column;
@@ -174,20 +170,17 @@ input:hover {
     font-weight: 600;
 }
 
-/* 分数显示 */
 #scoreInfo {
     font-size: 1.2rem;
     margin-bottom: 15px;
 }
 
-/* 题目文本 */
 #questionText {
     font-size: 1.4rem;
     margin-bottom: 25px;
     font-weight: 700;
 }
 
-/* 答案选项按钮 */
 #answerOptions button {
     display: flex;
     justify-content: center;
@@ -217,7 +210,6 @@ input:hover {
     box-shadow: none;
 }
 
-/* 本轮结果文本 */
 #roundResult {
     margin-top: 20px;
     font-size: 1.1rem;
@@ -226,7 +218,6 @@ input:hover {
     font-weight: 600;
 }
 
-/* 游戏结束区 */
 #gameOverSection {
     background-color: #d0f0fd;
     border-radius: 20px;
@@ -239,14 +230,12 @@ input:hover {
     font-weight: 700;
 }
 
-/* 结束信息 */
 #finalResult {
     font-size: 1.3rem;
     white-space: pre-line;
     margin-bottom: 25px;
 }
 
-/* 结束区按钮 */
 #backToStartBtn {
     width: 150px;
     height: 45px;

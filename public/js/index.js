@@ -1,3 +1,5 @@
+// 根据当前时间选择问候语
+// Greeting according to current time
 function greeting() {
     let element = document.getElementById("greet");
     let date = new Date();

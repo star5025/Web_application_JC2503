@@ -180,155 +180,173 @@ io.on('connection', (socket) => {
       const game = games[gameId];
       if (!game) return;
       if (!game.players.includes(socket.id)) return;
-  
+    
       // 初始化答案和时间戳存储
       // 'answers' is used to store each player's choice
       // 'answerTimes' is used to store the time when each player chose the option
       if (!game.answers) game.answers = {};
       if (!game.answerTimes) game.answerTimes = {};
-  
+      if (!game.scores) {
+        // 初始化分数，确保有默认值
+        game.scores = {};
+        game.players.forEach(playerId => {
+          if (game.scores[playerId] === undefined) game.scores[playerId] = 0;
+        });
+      }
+    
       // 如果已经提交答案就忽略
       // If player has already submitted an answer, then any subsequent answers they provide will be disregarded.
       if (game.answers[socket.id] !== undefined) return;
-  
+    
       // 保存玩家提交的选择以及提交的时间
       // Save the answer and the time
       game.answers[socket.id] = answerIndex;
       game.answerTimes[socket.id] = Date.now();
-  
+    
       // Find current question by index and then find its correct answer
       // 保存正确答案
       const qIndex = game.currentQuestionIndex;
       const correctIndex = game.questions[qIndex].answerIndex;
-  
-      // 判断是否有答案提交
-      const playersAnswered = Object.keys(game.answers);
-  
-      // 一旦有玩家提交答案，就尝试判分
-      // If a player has already made a choice, then start to score
-      if (playersAnswered.length >= 1) {
-          // 只要有一人答对就立即判分
-          let winnerId = null;
-          let winnerAnswerTime = Infinity;
-  
-          // 先找出答对玩家中最早提交者
-          // Identify the earliest submitter among the players who answered correctly
-          for (const playerId of playersAnswered) {
-              if (game.answers[playerId] === correctIndex) {
-                  if (game.answerTimes[playerId] < winnerAnswerTime) {
-                      winnerAnswerTime = game.answerTimes[playerId];
-                      winnerId = playerId;
-                  }
-              }
+    
+      // 计算当前两位玩家及其答案
+      const p1 = game.players[0];
+      const p2 = game.players[1];
+      const a1 = game.answers[p1];
+      const a2 = game.answers[p2];
+    
+      // 判断两位玩家是否都答题（或者超时未答由外部控制触发判分，这里只判两人都答时）
+      const answeredP1 = a1 !== undefined;
+      const answeredP2 = a2 !== undefined;
+    
+      // 只有当两位玩家都答题时才判分
+      if (answeredP1 && answeredP2) {
+        // 找出答对且最快的玩家
+        let winnerId = null;
+        let winnerTime = Infinity;
+    
+        for (const playerId of game.players) {
+          if (game.answers[playerId] === correctIndex) {
+            if (game.answerTimes[playerId] < winnerTime) {
+              winnerTime = game.answerTimes[playerId];
+              winnerId = playerId;
+            }
           }
-  
-          // 计算分数
-          // p1 and p2 represent the players, a1 and a2 represent their choices
-          const p1 = game.players[0];
-          const p2 = game.players[1];
-          const a1 = game.answers[p1];
-          const a2 = game.answers[p2];
-  
-          // 如果有赢家（答对且最先提交）
-          if (winnerId) {
-              // 赢家得2分，对手0分
-              // Player who has submitted right answer faster gets 2 points while his/her opponent gets 0 point
-              game.scores[winnerId] += 2;
-              const loserId = game.players.find(id => id !== winnerId);
-              game.scores[loserId] += 0;
-          } else {
-              // 无赢家：双方都答错，双方0分
-              // If both players chose the wrong answer
-              // 题目规则中答错玩家0分，对方1分，但双方都错，则都0分
-              // Both of them get 0 point
-              game.scores[p1] += 0;
-              game.scores[p2] += 0;
-          }
-  
-          // 对于答错玩家，对手得1分（如果对手没得2分的情况下）
-          // Player who has submitted the answer faster but has submitted wrong answer gets 0 point while his/her opponent gets 1 point
+        }
+    
+        // 清除本题临时分数防止累加重复
+        // 注意这里是累加总分，故不清0，只是确保初始有值
+        game.scores[p1] = game.scores[p1] || 0;
+        game.scores[p2] = game.scores[p2] || 0;
+    
+        if (winnerId) {
+          // 赢家得2分，对手0分
+          // Player who has submitted right answer faster gets 2 points while his/her opponent gets 0 point
+          game.scores[winnerId] += 2;
+          const loserId = game.players.find(id => id !== winnerId);
+          // 对手不得分
+          // 明确给0分加法写上，但加0无影响
+          game.scores[loserId] += 0;
+        } else {
+          // 无赢家：双方都答错或都未答
+          // 找出最快答错者
+          let firstWrongId = null;
+          let firstWrongTime = Infinity;
+    
           for (const playerId of game.players) {
-              if (game.answers[playerId] !== correctIndex) {
-                  const opponentId = game.players.find(id => id !== playerId);
-                  // 仅当对手不是赢家时，给对手加1分
-                  if (winnerId !== opponentId) {
-                      game.scores[opponentId] += 1;
-                  }
+            if (game.answers[playerId] !== correctIndex) {
+              if (game.answerTimes[playerId] < firstWrongTime) {
+                firstWrongTime = game.answerTimes[playerId];
+                firstWrongId = playerId;
               }
+            }
           }
-  
-          // 给双方发送本轮结果
-          // Emit the information about this round to both players in the same game
-          game.players.forEach(playerId => {
-              const socketPlayer = players[playerId].socket;
-              const youAnswer = game.answers[playerId];
-              const youCorrect = (youAnswer === correctIndex);
-              const opponentId = game.players.find(id => id !== playerId);
-              const opponentScore = game.scores[opponentId];
-              const yourScore = game.scores[playerId];
-  
-              socketPlayer.emit('roundResult', {
-                  correctAnswer: correctIndex,
-                  yourAnswer: youAnswer,
-                  yourScore,
-                  opponentScore,
-                  yourAnswerCorrect: youCorrect
-              });
+    
+          if (firstWrongId) {
+            // 答错者0分
+            game.scores[firstWrongId] += 0;
+            // 对手得1分
+            const opponentId = game.players.find(id => id !== firstWrongId);
+            game.scores[opponentId] += 1;
+          } else {
+            // 两人都未答或其他情况，双方0分
+            game.scores[p1] += 0;
+            game.scores[p2] += 0;
+          }
+        }
+    
+        // 给双方发送本轮结果
+        // Emit the information about this round to both players in the same game
+        game.players.forEach(playerId => {
+          const socketPlayer = players[playerId].socket;
+          const youAnswer = game.answers[playerId];
+          const youCorrect = (youAnswer === correctIndex);
+          const opponentId = game.players.find(id => id !== playerId);
+          const opponentScore = game.scores[opponentId];
+          const yourScore = game.scores[playerId];
+    
+          socketPlayer.emit('roundResult', {
+            correctAnswer: correctIndex,
+            yourAnswer: youAnswer,
+            yourScore,
+            opponentScore,
+            yourAnswerCorrect: youCorrect
           });
-  
-          // 清空答案和时间戳，准备下一题
-          // Clear the variable to prepare for next round
-          game.answers = {};
-          game.answerTimes = {};
-          game.currentQuestionIndex++;
-  
-          // 如果问题已经全部问完，游戏结束
-          // If all the questions in 'questions' array have already been asked, then the game is over
-          if (game.currentQuestionIndex >= game.questions.length) {
-              game.players.forEach(playerId => {
-                  const socketPlayer = players[playerId].socket;
-                  const yourScore = game.scores[playerId];
-                  const opponentScore = game.scores[game.players.find(id => id !== playerId)];
-                  // 平局文本
-                  // resultText will be shown on front-end
-                  let resultText = 'Draw! 😮';
-                  // 胜利文本
-                  if (yourScore > opponentScore) resultText = 'You win! Congratulation! 🍾';
-                  // 失败文本
-                  else if (yourScore < opponentScore) resultText = 'You lose. Keep trying! 💪';
-  
-                  // Emit the information about the result (scores) and the corresponding text to players
-                  socketPlayer.emit('gameOver', {
-                      yourScore,
-                      opponentScore,
-                      resultText
-                  });
+        });
+    
+        // 清空答案和时间戳，准备下一题
+        // Clear the variable to prepare for next round
+        game.answers = {};
+        game.answerTimes = {};
+        game.currentQuestionIndex++;
+    
+        // 如果问题已经全部问完，游戏结束
+        // If all the questions in 'questions' array have already been asked, then the game is over
+        if (game.currentQuestionIndex >= game.questions.length) {
+          game.players.forEach(playerId => {
+            const socketPlayer = players[playerId].socket;
+            const yourScore = game.scores[playerId];
+            const opponentScore = game.scores[game.players.find(id => id !== playerId)];
+            // 平局文本
+            // resultText will be shown on front-end
+            let resultText = 'Draw! 😮';
+            // 胜利文本
+            if (yourScore > opponentScore) resultText = 'You win! Congratulation! 🍾';
+            // 失败文本
+            else if (yourScore < opponentScore) resultText = 'You lose. Keep trying! 💪';
+    
+            // Emit the information about the result (scores) and the corresponding text to players
+            socketPlayer.emit('gameOver', {
+              yourScore,
+              opponentScore,
+              resultText
+            });
+          });
+          // 删除当前游戏
+          delete games[gameId];
+        } 
+        // 如果问题还没被问完，准备进入下一个问题
+        // If the question has not been fully answered, prepare to move on to the next question
+        else {
+          // The next question will be sent after 2500ms
+          setTimeout(() => {
+            const q = game.questions[game.currentQuestionIndex];
+            game.players.forEach(playerId => {
+              const socketPlayer = players[playerId].socket;
+              const yourScore = game.scores[playerId];
+              const opponentScore = game.scores[game.players.find(id => id !== playerId)];
+              // Emit next question to players
+              socketPlayer.emit('nextQuestion', {
+                question: q.question,
+                options: q.options,
+                yourScore,
+                opponentScore
               });
-              // 删除当前游戏
-              delete games[gameId];
-          } 
-          // 如果问题还没被问完，准备进入下一个问题
-          // If the question has not been fully answered, prepare to move on to the next question
-          else {
-            // The next question will be sent after 2500ms
-              setTimeout(() => {
-                  const q = game.questions[game.currentQuestionIndex];
-                  game.players.forEach(playerId => {
-                      const socketPlayer = players[playerId].socket;
-                      const yourScore = game.scores[playerId];
-                      const opponentScore = game.scores[game.players.find(id => id !== playerId)];
-                      // Emit next question to players
-                      socketPlayer.emit('nextQuestion', {
-                          question: q.question,
-                          options: q.options,
-                          yourScore,
-                          opponentScore
-                      });
-                  });
-              }, 2500);
-          }
+            });
+          }, 2500);
+        }
       }
     });
+    
   // 新连接时，发送当前留言板内容
   // When users are connected, emit the content of message board to them
   socket.emit('messageBoard', messages);

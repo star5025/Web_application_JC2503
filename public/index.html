@@ -29,8 +29,8 @@
             <div class="messageBoard">
                 <h4>Leave your message! 😺</h4>
                 <form id="msgForm">
-                name<input type="text" id="user" required>
-                message<input type="text" id="text" required>
+                name<input type="text" id="nickname" required>
+                message<input type="text" id="message" required>
                 <button type="submit" style="border-radius: 10px; border: 1px solid gainsboro; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);">submit</button>
                 </form>
                 <div id="messages"></div>
@@ -103,9 +103,8 @@
     </div>
 
 
-
+    <script src="/socket.io/socket.io.js"></script>
     <script src="js/index.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/showMessageBoard.js"></script>
 </body>
 </html>

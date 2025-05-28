@@ -16,6 +16,9 @@ const players = {};
 // Record game room's information like two participants' socketD, their current scores, the progress of quiz and questions
 const games = {};
 
+// 保存留言信息
+const messages = [];
+
 // 游戏题目
 // Store questions of the quiz game, there are 5 questions in total
 const quizQuestions = [
@@ -74,7 +77,7 @@ http.listen(PORT, () => {
 // 监听玩家上线的事件，一般在玩家进入网页时触发
 // Listening for events of the connection of new player
 io.on('connection', (socket) => {
-    console.log(`Player connected: ${socket.id}`);
+    console.log(`User connected: ${socket.id}`);
 
     // 监听玩家注册用户名的事件
     // Listening for events of registration of names
@@ -325,5 +328,17 @@ io.on('connection', (socket) => {
               }, 2500);
           }
       }
-  });  
+    });
+  // 新连接时，发送当前留言板内容
+  // When users are connected, emit the content of message board to them
+  socket.emit('messageBoard', messages);
+
+  // Listening for the events of leaving messages on message board
+  socket.on('message', ({nickname, message}) => {
+  // 保存留言
+  messages.push({nickname, message});
+
+  // 广播更新留言板给所有客户端
+  io.emit('messageBoard', messages);
+  });
 });

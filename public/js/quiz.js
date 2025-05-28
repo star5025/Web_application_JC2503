@@ -1,3 +1,4 @@
+// 前端代码
 const socket = io();
     
 // 页面元素
@@ -221,6 +222,7 @@ function showQuestion(question, options) {
     answerOptionsDiv.appendChild(btn);
   });
 
+  enableAnswerButtons();
   startTimer();
 }
 
@@ -329,7 +331,29 @@ function disableAnswerButtons() {
   buttons.forEach(btn => btn.disabled = true);
 }
 
+// 允许按钮点击（下一题时调用）
+// Enable buttons so player can choose again
+function enableAnswerButtons() {
+  const buttons = document.querySelectorAll('#answerOptions button');
+  buttons.forEach(btn => btn.disabled = false);
+}
+
 // 倒计时结束时展示文本
 function showTimeoutMessage() {
   roundResultP.textContent = 'Time out! ⏰';
 }
+
+// 监听服务器通知本轮结束，不允许再答题
+socket.on('roundEnded', (data) => {
+  if (!hasAnswered) {
+    hasAnswered = true;
+    clearInterval(timerInterval);
+    disableAnswerButtons();
+    roundResultP.textContent = 'Opponent answered first, round ended.';
+  }
+});
+
+// 监听服务器拒绝答案提交（如重复提交或超时已结束）
+socket.on('answerRejected', (data) => {
+  alert(`Answer rejected: ${data.reason}`);
+});

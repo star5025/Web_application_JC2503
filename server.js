@@ -1,3 +1,4 @@
+// 后端代码
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -136,51 +137,52 @@ io.on('connection', (socket) => {
     // 监听被挑战者回应挑战的事件
     // Listening for events of whether the challenged player accepts the challenge
     socket.on('challengeResponse', ({ challengerName, accept }) => {
-        const responder = players[socket.id];
-        if (!responder) return;
-        const challengerEntry = Object.entries(players).find(([id, p]) => p.name === challengerName);
-        if (!challengerEntry) return;
-        const [challengerId, challenger] = challengerEntry;
-        // 接受挑战
-        // Accept
-        if (accept) {
-            // 创建游戏
-            // Create a new game
-            const gameId = generateGameId();
-            games[gameId] = {
-                players: [challengerId, socket.id],
-                scores: { [challengerId]: 0, [socket.id]: 0 },
-                currentQuestionIndex: 0,
-                questions: quizQuestions
-            };
+      const challengerEntry = Object.entries(players).find(([id, p]) => p.name === challengerName);
+      if (!challengerEntry) return;
+      const [challengerId, challenger] = challengerEntry;
 
-            // 通知双方游戏开始
-            // Emit the event of game has begun to both challenger and responder
-            [challenger.socket, responder.socket].forEach(s => {
-                s.emit('gameStart', {
-                  // 初始化游戏信息
-                  // Initiate the information of new game
-                    opponent: (s.id === challengerId) ? responder.name : challenger.name,
-                    question: quizQuestions[0].question,
-                    options: quizQuestions[0].options,
-                    scores: { you: 0, opponent: 0 },
-                    gameId
-                });
-            });
-        } else {
-            // 拒绝挑战，通知挑战者
-            // If the responder rejects the challenge, emit the event of challenge has been rejected to the challenger
-            challenger.socket.emit('challengeRejected', responder.name);
-        }
+      if (accept) {
+        // 生成游戏ID，创建游戏数据
+        const gameId = generateGameId();
+        const player1 = challengerId;
+        const player2 = socket.id;
+
+        games[gameId] = {
+          players: [player1, player2],
+          scores: { [player1]: 0, [player2]: 0 },
+          currentQuestionIndex: 0,
+          questions: quizQuestions,
+          answers: {},
+          answerTimes: {},
+          roundEnded: false,
+        };
+
+        // 通知双方游戏开始，发送第一题
+        const firstQuestion = quizQuestions[0];
+        players[player1].socket.emit('gameStart', {
+          gameId,
+          opponent: players[player2].name,
+          question: firstQuestion.question,
+          options: firstQuestion.options,
+        });
+        players[player2].socket.emit('gameStart', {
+          gameId,
+          opponent: players[player1].name,
+          question: firstQuestion.question,
+          options: firstQuestion.options,
+        });
+      } else {
+        // 挑战被拒绝通知挑战者
+        challenger.socket.emit('challengeRejected', players[socket.id].name);
+      }
     });
 
-    // 监听玩家提交答案的事件
-    // Listening the event of submitting answer (player has clicked the option button)
+    // 监听提交答案事件，判分逻辑
     socket.on('submitAnswer', ({ gameId, answerIndex }) => {
       const game = games[gameId];
       if (!game) return;
       if (!game.players.includes(socket.id)) return;
-    
+
       // 初始化答案和时间戳存储
       // 'answers' is used to store each player's choice
       // 'answerTimes' is used to store the time when each player chose the option
@@ -193,37 +195,54 @@ io.on('connection', (socket) => {
           if (game.scores[playerId] === undefined) game.scores[playerId] = 0;
         });
       }
-    
+
+      // 如果本轮已结束，拒绝提交
+      if (game.roundEnded) {
+        // 可以给客户端提示本轮已结束
+        socket.emit('answerRejected', { reason: 'Round already ended.' });
+        return;
+      }
+
       // 如果已经提交答案就忽略
       // If player has already submitted an answer, then any subsequent answers they provide will be disregarded.
       if (game.answers[socket.id] !== undefined) return;
-    
+
       // 保存玩家提交的选择以及提交的时间
       // Save the answer and the time
       game.answers[socket.id] = answerIndex;
       game.answerTimes[socket.id] = Date.now();
-    
+
+      // 一旦第一个玩家提交答案，标记本轮结束，阻止另一个玩家提交
+      game.roundEnded = true;
+
+      // 主动通知另一玩家本轮已结束，不能再答题
+      const otherPlayerId = game.players.find(id => id !== socket.id);
+      if (players[otherPlayerId] && players[otherPlayerId].socket) {
+        players[otherPlayerId].socket.emit('roundEnded', {
+          message: 'Opponent has answered, round ended. You cannot submit answer now.'
+        });
+      }
+
       // Find current question by index and then find its correct answer
       // 保存正确答案
       const qIndex = game.currentQuestionIndex;
       const correctIndex = game.questions[qIndex].answerIndex;
-    
+
       // 计算当前两位玩家及其答案
       const p1 = game.players[0];
       const p2 = game.players[1];
       const a1 = game.answers[p1];
       const a2 = game.answers[p2];
-    
-      // 判断两位玩家是否都答题（或者超时未答由外部控制触发判分，这里只判两人都答时）
-      const answeredP1 = a1 !== undefined;
-      const answeredP2 = a2 !== undefined;
-    
-      // 只有当两位玩家都答题时才判分
-      if (answeredP1 && answeredP2) {
+
+      // 判断是否有至少一人答题
+      const playersAnswered = Object.keys(game.answers);
+
+      // 只要有一人答题，就开始判分（根据你想要的判分时机）
+      if (playersAnswered.length >= 1) {
         // 找出答对且最快的玩家
         let winnerId = null;
         let winnerTime = Infinity;
-    
+
         for (const playerId of game.players) {
           if (game.answers[playerId] === correctIndex) {
             if (game.answerTimes[playerId] < winnerTime) {
@@ -232,12 +251,12 @@ io.on('connection', (socket) => {
             }
           }
         }
-    
+
         // 清除本题临时分数防止累加重复
         // 注意这里是累加总分，故不清0，只是确保初始有值
         game.scores[p1] = game.scores[p1] || 0;
         game.scores[p2] = game.scores[p2] || 0;
-    
+
         if (winnerId) {
           // 赢家得2分，对手0分
           // Player who has submitted right answer faster gets 2 points while his/her opponent gets 0 point
@@ -251,7 +270,7 @@ io.on('connection', (socket) => {
           // 找出最快答错者
           let firstWrongId = null;
           let firstWrongTime = Infinity;
-    
+
           for (const playerId of game.players) {
             if (game.answers[playerId] !== correctIndex) {
               if (game.answerTimes[playerId] < firstWrongTime) {
@@ -260,7 +279,7 @@ io.on('connection', (socket) => {
               }
             }
           }
-    
+
           if (firstWrongId) {
             // 答错者0分
             game.scores[firstWrongId] += 0;
@@ -273,7 +292,7 @@ io.on('connection', (socket) => {
             game.scores[p2] += 0;
           }
         }
-    
+
         // 给双方发送本轮结果
         // Emit the information about this round to both players in the same game
         game.players.forEach(playerId => {
@@ -283,7 +302,7 @@ io.on('connection', (socket) => {
           const opponentId = game.players.find(id => id !== playerId);
           const opponentScore = game.scores[opponentId];
           const yourScore = game.scores[playerId];
-    
+
           socketPlayer.emit('roundResult', {
             correctAnswer: correctIndex,
             yourAnswer: youAnswer,
@@ -292,13 +311,14 @@ io.on('connection', (socket) => {
             yourAnswerCorrect: youCorrect
           });
         });
-    
+
         // 清空答案和时间戳，准备下一题
         // Clear the variable to prepare for next round
         game.answers = {};
         game.answerTimes = {};
+        game.roundEnded = false; // 重置，准备下一题
         game.currentQuestionIndex++;
-    
+
         // 如果问题已经全部问完，游戏结束
         // If all the questions in 'questions' array have already been asked, then the game is over
         if (game.currentQuestionIndex >= game.questions.length) {
@@ -313,7 +333,7 @@ io.on('connection', (socket) => {
             if (yourScore > opponentScore) resultText = 'You win! Congratulation! 🍾';
             // 失败文本
             else if (yourScore < opponentScore) resultText = 'You lose. Keep trying! 💪';
-    
+
             // Emit the information about the result (scores) and the corresponding text to players
             socketPlayer.emit('gameOver', {
               yourScore,

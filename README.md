@@ -22,21 +22,21 @@ Users can click the **buttons** on the right side of the bottom of the page to n
 ### Quiz Page (Front-end)
 
 The client is a single-page application built with **HTML**, **CSS**, and **JavaScript**. 
-After loading, users can register their username and they will be shown a list of online players. 
-Players can challenge others by clicking on their names, prompting the challenged player to accept or reject the invitation. 
+After loading, users can **register their name** and they will be shown a **list of online players**. 
+Players can challenge others by **clicking on their names**, prompting the challenged player to **accept or reject the invitation**. 
 When player accepted the challenge, the game interface will load and begin displaying questions. 
-Each question has multiple-choice answer options and an eight-second countdown timer. 
-At the end of each question session, there will be a feedback about current score and the result of answer displaying on the page. 
-After submission or timeout, the UI will disable answer selection, so it allows only one answer per player per round. 
+Each question has **multiple-choice options** and an eight-second **countdown timer**. 
+At the end of each question session, there will be a **feedback** about current score and the result of answer displaying on the page. 
+**After submission or timeout**, the UI will disable answer selection, so it allows only one answer per player per round. 
 If a player fails to answer before the timer expires, the client automatically submits a timeout response. 
 Real-time feedback is provided throughout the game to keep players informed of round results and overall standings.
 
 ### Quiz Page (Back-end)
 
-The server is developed with **Node.js** and **Express**, serving static files and using **Socket.IO** for WebSocket communication. It manages:
+The server is developed with **Node.js** and **Express**, serving static files and using **Socket.io** for WebSocket communication. It manages:
 
-- A registry of online players, tracking their socket IDs and usernames.
-- Active game sessions identified by unique game IDs, which store player sockets, current questions, submitted answers, timestamps, and scores.
+- A registry of online players, tracking their **socket IDs** and **names**.
+- Active game sessions identified by unique **game IDs**, which store player sockets, current questions, submitted answers, timestamps, and scores.
 
 When the challenge receiver accept, the server creates a new game, and notifies both players to start. The server enforces game logic by:
 

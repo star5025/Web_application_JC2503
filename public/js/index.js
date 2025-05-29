@@ -5,6 +5,29 @@ const nicknameInput = document.getElementById('nickname');
 const messageInput = document.getElementById('message');
 const messagesDiv = document.getElementById('messages');
 
+// 根据当前时间选择问候语
+// Greeting according to current time
+function greeting() {
+  let element = document.getElementById("greet");
+  let date = new Date();
+  let hour = date.getHours();
+  let message = "";
+
+  if (hour >= 6 && hour < 11) {
+      message = "Good morning! 👋";
+  } else if (hour >= 11 && hour < 13) {
+      message = "Good day! 👨‍💻";
+  } else if (hour >= 13 && hour < 18) {
+      message = "Good afternoon! 🍵";
+  } else {
+      message = "Good evening! 🌃";
+  }
+
+  element.textContent = message;
+}
+
+greeting();
+
 msgForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const nickname = nicknameInput.value.trim();
@@ -32,27 +55,3 @@ socket.on('messageBoard', (messages) => {
     messagesDiv.appendChild(msgElem);
   });
 });
-
-
-// 根据当前时间选择问候语
-// Greeting according to current time
-function greeting() {
-    let element = document.getElementById("greet");
-    let date = new Date();
-    let hour = date.getHours();
-    let message = "";
-
-    if (hour >= 6 && hour < 11) {
-        message = "Good morning! 👋";
-    } else if (hour >= 11 && hour < 13) {
-        message = "Good day! 👨‍💻";
-    } else if (hour >= 13 && hour < 18) {
-        message = "Good afternoon! 🍵";
-    } else {
-        message = "Good evening! 🌃";
-    }
-
-    element.textContent = message;
-}
-
-greeting();

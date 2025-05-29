@@ -241,9 +241,10 @@ socket.on('roundResult', (data) => {
   let resultMsg = `Correct answer: "${correctAnswerText}"。\nYou chose "${yourAnswerText}".`;
 
   if (data.yourAnswerCorrect) {
-    resultMsg += ' Right answer! 🥳';
-  } else {
-    resultMsg += ' Wrong answer! 😵';
+    resultMsg += ' Right! 🥳';
+  }
+  else {
+    resultMsg += ' Wrong! 😵';
   }
 
   resultMsg += `\nCurrent score: you: ${data.yourScore} , opponent: ${data.opponentScore} .`;
@@ -344,6 +345,7 @@ function showTimeoutMessage() {
 }
 
 // 监听服务器通知本轮结束，不允许再答题
+// When someone chose an answer, the other is not allow tp choose
 socket.on('roundEnded', (data) => {
   if (!hasAnswered) {
     hasAnswered = true;

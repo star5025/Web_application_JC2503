@@ -178,6 +178,7 @@ io.on('connection', (socket) => {
     });
 
     // 监听提交答案事件，判分逻辑
+    // Listening for the events of submitting answer
     socket.on('submitAnswer', ({ gameId, answerIndex }) => {
       const game = games[gameId];
       if (!game) return;
@@ -197,6 +198,7 @@ io.on('connection', (socket) => {
       }
 
       // 如果本轮已结束，拒绝提交
+      // If one player has already submitted an answer, 'roundEnded' will be true
       if (game.roundEnded) {
         // 可以给客户端提示本轮已结束
         socket.emit('answerRejected', { reason: 'Round already ended.' });
@@ -237,7 +239,7 @@ io.on('connection', (socket) => {
       // 判断是否有至少一人答题
       const playersAnswered = Object.keys(game.answers);
 
-      // 只要有一人答题，就开始判分（根据你想要的判分时机）
+      // 只要有一人答题，就开始判分
       if (playersAnswered.length >= 1) {
         // 找出答对且最快的玩家
         let winnerId = null;
@@ -252,8 +254,6 @@ io.on('connection', (socket) => {
           }
         }
 
-        // 清除本题临时分数防止累加重复
-        // 注意这里是累加总分，故不清0，只是确保初始有值
         game.scores[p1] = game.scores[p1] || 0;
         game.scores[p2] = game.scores[p2] || 0;
 
@@ -262,8 +262,6 @@ io.on('connection', (socket) => {
           // Player who has submitted right answer faster gets 2 points while his/her opponent gets 0 point
           game.scores[winnerId] += 2;
           const loserId = game.players.find(id => id !== winnerId);
-          // 对手不得分
-          // 明确给0分加法写上，但加0无影响
           game.scores[loserId] += 0;
         } else {
           // 无赢家：双方都答错或都未答
@@ -280,6 +278,7 @@ io.on('connection', (socket) => {
             }
           }
 
+          // If the player who chose the answer faster has chose a wrong answer, his/her opponent will get 1 point and he/she will get 0 point
           if (firstWrongId) {
             // 答错者0分
             game.scores[firstWrongId] += 0;
@@ -367,6 +366,9 @@ io.on('connection', (socket) => {
       }
     });
     
+  // 留言墙功能
+  // Message board
+
   // 新连接时，发送当前留言板内容
   // When users are connected, emit the content of message board to them
   socket.emit('messageBoard', messages);

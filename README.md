@@ -1,3 +1,9 @@
+## 如何启动本项目 🚀
+
+1. 终端输入 `npm install` 安装依赖node模块
+2. 终端输入 `npm start` 启动后端服务器，使用浏览器访问 **localhost:3000**
+
+
 # Report
 
 ## 1. Overview

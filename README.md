@@ -12,12 +12,15 @@ This page contains **static content** of the **introduction** about the web appl
 To implement the function of navigating to the other two pages, a **sidebar** is constructed on the left of the page.
 Inside the sidebar there is a **real-time update message board** implemented by Socket.io, users can leave their messages and check others messages.
 
+![Introduction Page](public/assets/images/screenshots/IntroductionPage.png)
+
 ### About Page
 
 The content of this page is about my **private interests**.
 There is a **navigate bar** on the top which enables users navigate to corresponding interest.
 Users can click the **buttons** on the right side of the bottom of the page to navigate to Introduction Page or About Page.
 
+![About Page](public/assets/images/screenshots/AboutPage.png)
 
 ### Quiz Page (Front-end)
 
@@ -30,6 +33,8 @@ At the end of each question session, there will be a **feedback** about current 
 **After submission or timeout**, the UI will disable answer selection, so it allows only one answer per player per round. 
 If a player fails to answer before the timer expires, the client automatically submits a timeout response. 
 Real-time feedback is provided throughout the game to keep players informed of round results and overall standings.
+
+![Quiz Page](public/assets/images/screenshots/QuizPage.png)
 
 ### Quiz Page (Back-end)
 
@@ -52,17 +57,23 @@ When the challenge receiver accept, the server creates a new game, and notifies 
   1. Clients emit `register` with their username after submitting.
   2. The server broadcasts `playerList` updates to all clients.
 
+  ![](public/assets/images/screenshots/playerList.png)
+
 - **Challenge:**
   1. lients emit `challenge` with the target username.
   2. The server sends `challenged` to the target client.
   3. The challenged client responds with `challengeResponse` indicating acceptance or rejection.
   4. The server emits `gameStart` to both players if accepted, or `challengeRejected` if declined.
 
+  ![](public/assets/images/screenshots/challenge.png)
+
 - **Gameplay:**
   1. Clients submit answers via `submitAnswer` with game ID and chosen answer index.
   2. The server verifies the submission, locks the round by setting a `roundEnded` flag, and emits `roundEnded` to the opponent to disable further answers.
   3. After scoring, the server sends `roundResult` to both clients with detailed outcomes.
   4. The server emits `nextQuestion` for subsequent rounds or `gameOver` when the quiz ends.
+  
+  ![](public/assets/images/screenshots/game.png)
 
 - **Reject and disconnection:**
   - `answerRejected` notifies clients if their submission is late or duplicate.
